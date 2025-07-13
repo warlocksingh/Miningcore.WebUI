@@ -30,7 +30,7 @@ if (WebURL.substring(WebURL.length-1) != "/")
 	WebURL = WebURL + "/";
 	console.log('Corrected WebURL, does not end with / -> New WebURL : ', WebURL);
 }
-var API            = WebURL + "api/";   						// API address is:  https://domain.com/api/
+var API            = "http://localhost:4000/api/";   						// API address is:  http://localhost:4000/api/
 // API correction if not ends with /
 if (API.substring(API.length-1) != "/")
 {
@@ -169,16 +169,19 @@ function loadHomePage() {
 		var coinName = value.coin.name;
 		if (typeof coinName === "undefined" || coinName === null) {coinName = value.coin.type;}
 
-		poolCoinTableTemplate += "<tr class='coin-table-row' href='#" + value.id + "'>";
-		poolCoinTableTemplate += "<td class='coin'><a href='#" + value.id + "'<span>" + coinLogo + coinName + " (" + value.coin.type.toUpperCase() + ") </span></a></td>";
-		poolCoinTableTemplate += "<td class='algo'>" + value.coin.algorithm + "</td>";
-		poolCoinTableTemplate += "<td class='miners'>" + value.poolStats.connectedMiners + "</td>";
-		poolCoinTableTemplate += "<td class='pool-hash'>" + _formatter(value.poolStats.poolHashrate, 5, "H/s") + "</td>";
-		poolCoinTableTemplate += "<td class='fee'>" + value.poolFeePercent + " %</td>";
-		poolCoinTableTemplate += "<td class='net-hash'>" + _formatter(value.networkStats.networkHashrate, 5, "H/s") + "</td>";
-		poolCoinTableTemplate += "<td class='net-diff'>" + _formatter(value.networkStats.networkDifficulty, 5, "") + "</td>";
-		poolCoinTableTemplate += "<td class='card-btn col-hide'>Go Mine " + coinLogo + coinName + "</td>";
-		poolCoinTableTemplate += "</tr>";
+        const poolStats = value.poolStats || { connectedMiners: 0, poolHashrate: 0 };
+        const networkStats = value.networkStats || { networkHashrate: 0, networkDifficulty: 0 };
+
+        poolCoinTableTemplate += "<tr class='coin-table-row' href='#" + value.id + "'>";
+        poolCoinTableTemplate += "<td class='coin'><a href='#" + value.id + "'<span>" + coinLogo + coinName + " (" + value.coin.type.toUpperCase() + ") </span></a></td>";
+        poolCoinTableTemplate += "<td class='algo'>" + (value.coin.algorithm || 'N/A') + "</td>";
+        poolCoinTableTemplate += "<td class='miners'>" + (poolStats.connectedMiners || 0) + "</td>";
+        poolCoinTableTemplate += "<td class='pool-hash'>" + _formatter(poolStats.poolHashrate || 0, 5, "H/s") + "</td>";
+        poolCoinTableTemplate += "<td class='fee'>" + (value.poolFeePercent || 0) + " %</td>";
+        poolCoinTableTemplate += "<td class='net-hash'>" + _formatter(networkStats.networkHashrate || 0, 5, "H/s") + "</td>";
+        poolCoinTableTemplate += "<td class='net-diff'>" + _formatter(networkStats.networkDifficulty || 0, 5, "") + "</td>";
+        poolCoinTableTemplate += "<td class='card-btn col-hide'>Go Mine " + coinLogo + coinName + "</td>";
+        poolCoinTableTemplate += "</tr>";
       });
 
       //if (poolList.length > 0) {
