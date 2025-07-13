@@ -1,53 +1,87 @@
 # Miningcore.WebUI
-<h4>Miningcore WebUI for the Coinfoundry Miningcore Pool</h4>
 
-Miningcore is one of the best open source minning pools there are.
-To make this pool look good, you have to have a nice and fast user interface.
-Miningcore.WebUI does that for you and it open source. so you can change it as you want. 
+A modern, responsive WebUI for MiningCore mining pool software.
 
-How to install & Configure
-This Miningcore WebUI need a working Miningcore Pool API
-- Download the Miningcore.WebUI files
-- Save them on your webserver and point your webserver config to the index.html
-  
-You should now see the site and live pool API info
+## Features
 
-  
-<b>Website is visible, but no live data is shown</b></br>
-Live info data is retrieved from the miningcore pool API.</br>
-The WebUI website default looks at the domain-name/api.</br>
-If this is not you api location, you need to edit the miningcore.js file.</br>
+- Clean, responsive design
+- Real-time statistics and monitoring
+- Easy deployment with Docker
+- Supports multiple coins and algorithms
+- Mobile-friendly interface
 
-Chang API location</br>
-- open the WebUI config file in you editor: js/miningcore.js
-- change the following:
+## Quick Start with Docker
 
-var WebURL         = window.location.protocol + "//" + window.location.hostname + "/";</br>
-var API            = WebURL + "api/";</br>
-var stratumAddress = "stratum+tcp://" + window.location.hostname + ":";</br>
+The easiest way to deploy Miningcore.WebUI is using the pre-built Docker image:
 
+```bash
+docker run -d \
+  --name miningcore-webui \
+  -p 8080:80 \
+  --network miningcore-net \
+  -v $(pwd)/poolconfig:/usr/share/nginx/html/poolconfig \
+  warlocksingh/miningcore.webui:latest
+```
 
-it should be like this:</br>
-(replace domain-name.com is you own domain name)</br>
-var WebURL = "https://domain-name.com/";</br>
-var API = "https://domain-name.com/api/";</br>
-var stratumAddress = "stratum+tcp://domain-name.com:";</br>
+### Configuration
 
+1. **Network Setup**: Ensure the container is on the same Docker network as your MiningCore instance (default: `miningcore-net`)
 
+2. **API Configuration**: Create a `config.js` file in the `poolconfig` directory:
+   ```javascript
+   // Custom configuration for MiningCore WebUI
+   var WebURL = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/";
+   var API = "http://miningcore:4000/api/";  // Use Docker service name
+   var stratumAddress = window.location.hostname;
+   ```
 
-<b>Live Miningcore.WebUI</b></br>
-My pool website can be found at https://miningcore.eu
+3. **Pool Configuration**: Configure your pools in `poolconfig/pools.json`
 
+## Manual Installation
 
-<b>Suggestion</b></br>
-Do you have any idea what to add more to the website, or you found a bug
-let me know and we will see what we can do.
+1. Clone this repository
+2. Configure `js/miningcore.js` with your MiningCore API endpoint
+3. Deploy to any web server
 
+## Docker Compose Example
 
-<b>Roadmap:</b></br>
-- add multiple single miningcore pool servers in one website
-- add more color skins out off the box
-- add last time block found (sec / min / hours)
+```yaml
+version: '3'
+
+services:
+  webui:
+    image: warlocksingh/miningcore.webui:latest
+    container_name: miningcore-webui
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./poolconfig:/usr/share/nginx/html/poolconfig
+    networks:
+      - miningcore-net
+
+networks:
+  miningcore-net:
+    external: true
+```
+
+## Building from Source
+
+To build your own Docker image:
+
+```bash
+git clone https://github.com/btclinux/Miningcore.WebUI.git
+cd Miningcore.WebUI
+docker build -t yourusername/miningcore.webui:latest .
+```
+
+## Support
+
+For support, please open an issue on GitHub or visit our community forum.
+
+## License
+
+This project is open source and available under the MIT License.
 - add blockchain height (number)
 - add current round variance  (in %)
 - add pool fee (in %)
