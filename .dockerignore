@@ -21,6 +21,5 @@ Thumbs.db
 *.sql
 *.sqlite
 
-# Local development files
-poolconfig/*
-!poolconfig/pools.json.example
+# Only exclude development files, include all necessary runtime files
+# The build process will handle which files to include in the final image
